@@ -63,9 +63,13 @@ fun RowScope.AddItem(
         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
         unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
         onClick = {
-            navHostController.navigate(screen.route) {
-                popUpTo(navHostController.graph.findStartDestination().id)
-                launchSingleTop = true
+            // This if check gives us a "singleTop" behavior where we do not create a
+            // second instance of the composable if we are already on that destination
+            if (currentDestination?.route.toString() != screen.route) {
+                navHostController.navigate(screen.route) {
+                    popUpTo(navHostController.graph.findStartDestination().id)
+                    launchSingleTop = true
+                }
             }
         }
     )
